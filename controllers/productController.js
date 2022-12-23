@@ -136,7 +136,6 @@ exports.deleteOneProduct = async (req, res) => {
 
 
 // count of products by category
-//men's clothing
 exports.countProductByCategory= async (req,res)=>{
   try{
     const menClothingcount= await Product.find({category:"men's clothing"}).count();
@@ -195,6 +194,18 @@ exports.jeweleryProductByCategory= async (req,res)=>{
 
     const jewelery= await Product.find({category:"jewelery"});
     res.status(200).send(jewelery);
+
+  }catch (err) {
+    res.status(500).send(err.message);
+  }
+}
+
+
+//men's clothing
+exports.totalPrizesByCategory= async (req,res)=>{
+  try{
+    const TotalpricesByCategory= await Product.aggregate([{$match:{}},{$group:{_id:"$category",total:{$sum:"$price"}}}]);
+    res.status(200).send(TotalpricesByCategory);
 
   }catch (err) {
     res.status(500).send(err.message);

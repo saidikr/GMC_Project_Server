@@ -16,5 +16,6 @@ module.exports = () => {
   router.get("/womensproduct", ProductController.womensProductByCategory);
   router.get("/electronicsproduct", ProductController.electronicsProductByCategory);
   router.get("/jeweleryproduct", ProductController.jeweleryProductByCategory);
+  router.get("/totalprices", ProductController.totalPrizesByCategory);
   return router;
 };
