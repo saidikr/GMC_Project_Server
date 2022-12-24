@@ -55,6 +55,7 @@ exports.addOneProduct = async (req, res) => {
       image: url + "/uploads/" + req.file.filename, // full image link http://localhost:4000/uplaods/imagename.ext
       rating: req.body.rating,
       quantity: req.body.quantity,
+      createAt:Date.now(),
     });
     // saving our new created instances
     const savedProduct = await product.save();
@@ -204,7 +205,7 @@ exports.jeweleryProductByCategory= async (req,res)=>{
 //men's clothing
 exports.totalPrizesByCategory= async (req,res)=>{
   try{
-    const TotalpricesByCategory= await Product.aggregate([{$match:{}},{$group:{_id:"$category",total:{$sum:"$price"}}}]);
+    const TotalpricesByCategory= await Product.aggregate([{$match:{}},{$group:{_id:"$category",total:{$sum:"$quantity"}}}]);
     res.status(200).send(TotalpricesByCategory);
 
   }catch (err) {
