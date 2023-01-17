@@ -1,19 +1,10 @@
 const Product = require("../models/Product");
-const fs = require("fs");
-const path = require("path");
+const cloudinary = require("../utils/cloudinary");
 
 
 
 
 
-// this function will let you delete an image from the file system
-function deleteProductImageFromDisk(imgName) {
-  let pathname = path.join(__dirname, "../" + "public/uploads/" + imgName);
-  fs.unlink(pathname, (err) => {
-    if (err) throw err;
-    console.log("File deleted");
-  });
-}
 // get All Products
 exports.getAllProducts = async (req, res) => {
   try {
@@ -42,17 +33,18 @@ exports.getProductById = async (req, res) => {
 // insert product
 exports.addOneProduct = async (req, res) => {
   try {
-    const url = req.protocol + "://" + req.get("host"); // http://localhost:4000
+    // const url = req.protocol + "://" + req.get("host"); // http://localhost:4000
     //save image in cloudinary
     // console.log(req.file.path);
-    // const result = await cloudinary.uploader.upload(req.file.path);
-
+    const result = await cloudinary.uploader.upload(req.file.path);
     const product = new Product({
       title: req.body.title,
       price: req.body.price,
       description: req.body.description,
       category: req.body.category,
-      image: url + "/uploads/" + req.file.filename, // full image link http://localhost:4000/uplaods/imagename.ext
+      // image: url + "/uploads/" + req.file.filename, // full image link http://localhost:4000/uplaods/imagename.ext
+      image: result.secure_url,
+      cloudinary_id: result.public_id,
       rating: req.body.rating,
       quantity: req.body.quantity,
       createAt:Date.now(),
@@ -70,8 +62,12 @@ exports.addOneProduct = async (req, res) => {
 exports.updateOneProduct = async (req, res) => {
   try {
     if (req.file) {
-      const url = req.protocol + "://" + req.get("host");
+      // const url = req.protocol + "://" + req.get("host");
       let p = await Product.findOne({ _id: req.params.id });
+      if(p.cloudinary_id){
+        await cloudinary.uploader.destroy(p.cloudinary_id);
+      }
+      const result = await cloudinary.uploader.upload(req.file.path);
       let product = await Product.findOneAndUpdate(
         { _id: req.params.id },
         {
@@ -79,7 +75,8 @@ exports.updateOneProduct = async (req, res) => {
           price: req.body.price,
           description: req.body.description,
           category: req.body.category,
-          image: url + "/uploads/" + req.file.filename, // full image link http://localhost:4000/uplaods/imagename.ext
+          image: result.secure_url,
+          cloudinary_id: result.public_id,
           rating: req.body.rating,
           quantity: req.body.quantity,
         },
@@ -126,8 +123,9 @@ exports.deleteOneProduct = async (req, res) => {
     }
     //delete the product image from disl
     
-    let imgName = product.image.split("/")[4];
-    deleteProductImageFromDisk(imgName);
+    // let imgName = product.image.split("/")[4];
+    // deleteProductImageFromDisk(imgName);
+    await cloudinary.uploader.destroy(post.cloudinary_id)
     await Product.deleteOne({ _id: req.params.id });
     res.status(200).send("product deleted");
   } catch (err) {

@@ -21,6 +21,9 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  cloudinary_id: {
+    type: String,
+  },
   rating: {
     type: Number,
     default:0.0,

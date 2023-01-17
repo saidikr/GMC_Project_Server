@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 });
 
 var upload = multer({
-  storage: storage,//hna ida drt le variable storage dakhl multer.diskStorage le file yetsauvgarda f diskLocal ta3k 
+  storage: multer.diskStorage({}),//hna ida drt le variable storage dakhl multer.diskStorage le file yetsauvgarda f diskLocal ta3k 
   fileFilter: (req, file, cb) => {
     if (
       file.mimetype === "image/png" ||
