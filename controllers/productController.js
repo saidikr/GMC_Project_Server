@@ -8,7 +8,7 @@ const cloudinary = require("../utils/cloudinary");
 // get All Products
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find().sort({"createAt":1});
+    const products = await Product.find().sort({"createAt":-1});
     res.status(200).send(products);
   } catch (err) {
     res.status(500).send(err.message);
