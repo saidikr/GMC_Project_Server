@@ -23,4 +23,4 @@ Node.js, Express, MongoDB.
 
 Client Repository:
 
-https://github.com/saidikr/GMC_Project_Server.git
+https://github.com/saidikr/GMC_Project_Client.git
